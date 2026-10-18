@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Оформить новые игры — картинки</title>
+<style>
+  :root {
+    --bg-top: #0a0f24;
+    --bg-bottom: #1c1240;
+    --text: #f5f7ff;
+    --muted: rgba(245, 247, 255, .74);
+  }
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+  body { font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif; color: var(--text); }
+  .scene {
+    position: absolute; inset: 0; overflow: hidden;
+    background:
+      radial-gradient(55% 45% at 72% 28%, rgba(123, 92, 255, .55), transparent 70%),
+      radial-gradient(50% 45% at 18% 82%, rgba(26, 159, 255, .40), transparent 70%),
+      linear-gradient(165deg, var(--bg-top), var(--bg-bottom));
+  }
+  .scene::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, .10) 1px, transparent 1.6px);
+    background-size: 24px 24px;
+    -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, .9), rgba(0, 0, 0, .15));
+  }
+  .emblem { position: absolute; }
+  .emblem svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .text { position: absolute; }
+  .title { font-weight: 800; letter-spacing: -.025em; line-height: .98; margin: 0; }
+  .title span { display: block; }
+  .accent {
+    background: linear-gradient(90deg, #6cc8ff, #c3b2ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub { color: var(--muted); font-weight: 600; letter-spacing: .01em; margin: 0; }
+  .glow { position: absolute; border-radius: 50%; filter: blur(60px); }
+</style>
+</head>
+<body>
+<script>
+const EMBLEM = `
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="front" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#36b9ff"/>
+      <stop offset="1" stop-color="#7356ff"/>
+    </linearGradient>
+    <linearGradient id="middle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2154a8"/>
+      <stop offset="1" stop-color="#2d3f8f"/>
+    </linearGradient>
+    <linearGradient id="back" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a2f86"/>
+      <stop offset="1" stop-color="#57308f"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2=".6" y2=".8">
+      <stop offset="0" stop-color="#fff" stop-opacity=".38"/>
+      <stop offset=".55" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#000" flood-opacity=".45"/>
+    </filter>
+    <filter id="spark" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#ffcf5a" flood-opacity=".75"/>
+    </filter>
+    <path id="star" d="M0,-1 C.13,-.13 .13,-.13 1,0 C.13,.13 .13,.13 0,1 C-.13,.13 -.13,.13 -1,0 C-.13,-.13 -.13,-.13 0,-1Z"/>
+  </defs>
+  <g filter="url(#shadow)">
+    <rect x="105" y="70" width="190" height="260" rx="22" fill="url(#back)" stroke="#fff" stroke-opacity=".12" stroke-width="2" transform="rotate(14 200 200)"/>
+    <rect x="105" y="70" width="190" height="260" rx="22" fill="url(#middle)" stroke="#fff" stroke-opacity=".14" stroke-width="2" transform="rotate(-9 200 200)"/>
+    <rect x="105" y="70" width="190" height="260" rx="22" fill="url(#front)"/>
+  </g>
+  <rect x="105" y="70" width="190" height="260" rx="22" fill="url(#gloss)"/>
+  <rect x="106" y="71" width="188" height="258" rx="21" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="2"/>
+  <g transform="translate(200 182) scale(.76)">
+    <path fill="#fff" d="M-62,-26 H62 A34,34 0 0 1 94,20 L84,46 A22,22 0 0 1 46,50 L32,32 H-32 L-46,50 A22,22 0 0 1 -84,46 L-94,20 A34,34 0 0 1 -62,-26Z"/>
+    <g fill="#4f63ff">
+      <rect x="-60" y="-4" width="34" height="11" rx="3"/>
+      <rect x="-48.5" y="-15.5" width="11" height="34" rx="3"/>
+      <circle cx="38" cy="-6" r="7"/>
+      <circle cx="56" cy="8" r="7"/>
+    </g>
+  </g>
+  <rect x="135" y="262" width="130" height="13" rx="6.5" fill="#fff" fill-opacity=".9"/>
+  <rect x="135" y="284" width="84" height="10" rx="5" fill="#fff" fill-opacity=".5"/>
+  <g fill="#ffd56b" filter="url(#spark)">
+    <use href="#star" transform="translate(300 74) scale(36)"/>
+    <use href="#star" transform="translate(344 134) scale(19)"/>
+    <use href="#star" transform="translate(258 30) scale(13)"/>
+  </g>
+</svg>`;
+
+const VIEWS = {
+  poster: `
+    <div class="scene"></div>
+    <div class="emblem" style="left:70px; top:90px; width:460px; height:460px"></div>
+    <div class="text" style="left:0; right:0; top:590px; text-align:center">
+      <h1 class="title" style="font-size:78px"><span>Оформить</span><span class="accent">новые игры</span></h1>
+      <p class="sub" style="font-size:27px; margin-top:34px">картинки · Proton · раскладка</p>
+    </div>`,
+  wide: `
+    <div class="scene"></div>
+    <div class="emblem" style="left:28px; top:42px; width:346px; height:346px"></div>
+    <div class="text" style="left:388px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center">
+      <h1 class="title" style="font-size:66px"><span>Оформить</span><span class="accent">новые игры</span></h1>
+      <p class="sub" style="font-size:24px; margin-top:24px">картинки · Proton · раскладка</p>
+    </div>`,
+  hero: `
+    <div class="scene"></div>
+    <div class="glow" style="left:1180px; top:60px; width:560px; height:460px; background:rgba(123,92,255,.45)"></div>
+    <div class="emblem" style="left:860px; top:180px; width:300px; height:300px; opacity:.35; filter:blur(3px); transform:rotate(-16deg)"></div>
+    <div class="emblem" style="left:1700px; top:-40px; width:260px; height:260px; opacity:.3; filter:blur(4px); transform:rotate(18deg)"></div>
+    <div class="emblem" style="left:1190px; top:10px; width:600px; height:600px"></div>`,
+  logo: `
+    <div class="emblem" style="left:0; top:10px; width:340px; height:340px"></div>
+    <div class="text" style="left:348px; top:0; bottom:0; display:flex; align-items:center">
+      <h1 class="title" style="font-size:124px; text-shadow:0 6px 28px rgba(0,0,0,.55)"><span>Оформить</span><span style="color:#9fd8ff">новые игры</span></h1>
+    </div>`,
+  icon: `<div class="emblem" style="left:0; top:0; width:256px; height:256px"></div>`,
+};
+
+document.body.innerHTML = VIEWS[location.hash.slice(1)] || VIEWS.poster;
+document.querySelectorAll(".emblem").forEach(e => { e.innerHTML = EMBLEM; });
+</script>
+</body>
+</html>
