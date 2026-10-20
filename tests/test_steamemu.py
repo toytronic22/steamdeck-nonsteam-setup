@@ -176,6 +176,14 @@ class RunnerEmulator(unittest.TestCase):
         self.assertEqual(orig, 3483740)
         self.assertTrue(any(line.startswith("   эмулятор Steam: заменю") for line in lines), lines)
 
+    def test_game_not_found_in_store_still_gets_the_fix(self):
+        sc = {"appid": 7, "name": "Repack", "exe": self.exe, "start_dir": self.game}
+        with mock.patch.object(main.steamweb, "match_game", return_value=None):
+            orig, lines = self.runner(dry_run=False).process(sc)
+        self.assertIsNone(orig)
+        self.assertTrue(lines[-1].startswith("   эмулятор Steam: в steamclient64.ini"), lines)
+        self.assertIn(b"=gbe_client64.dll", read(self.ini))
+
     def test_regular_game_gets_no_line(self):
         exe = put(b"MZ", self.tmp.name, "Plain", "Game.exe")
         self.assertEqual(self.runner(dry_run=False).apply_emulator({"appid": 7, "exe": exe}), [])

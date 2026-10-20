@@ -265,8 +265,9 @@ If the shortcut's exe folder has such a loader's config — `steamclient64.ini` 
 `SteamClientPath64` and `SteamClientPath` in `[Launcher]`) or `ColdClientLoader.ini` (gbe, keys `SteamClient64Dll`
 and `SteamClientDll` in `[SteamClient]`) — and the dll it names is on disk, the program puts a copy next to it as
 `gbe_client64.dll` (`gbe_client.dll` for 32-bit), writes the new name into the config and keeps the original config
-as `.ini.orig`. The report says «эмулятор Steam: …». A second run changes nothing; to undo, put the `.orig` back. A
-game set up before this step appeared gets it with `run.sh --appid <id>`.
+as `.ini.orig`. The report says «эмулятор Steam: …». This does not depend on the store: it is done even for a game
+the store search did not find. A second run changes nothing; to undo, put the `.orig` back. A game set up before
+this step appeared gets it with `run.sh --appid <id>`.
 
 A shortcut pointing to something other than a program (a `.dll`, `.ini`, an image — this happens if you pick the
 wrong file in «Add a Non-Steam Game») will not start in Steam. Such a shortcut is not set up; the report says what it
