@@ -18,6 +18,7 @@ import launch
 import layouts
 import protondb
 import redist
+import steamemu
 import steamweb
 import update
 import vdf
@@ -447,20 +448,21 @@ class Runner:
     def process(self, sc):
         lines = []
         appid = sc["appid"]
+        emulator = self.apply_emulator(sc)
         tried = name_candidates(sc)
         match = None
         for cand in tried:
             try:
                 match = steamweb.match_game(cand)
             except Exception as e:
-                return None, [f"✗ {sc['name']}: магазин Steam не ответил ({e})"]
+                return None, [f"✗ {sc['name']}: магазин Steam не ответил ({e})"] + emulator
             if match:
                 break
         if not match:
             self.not_found.add(appid)
             names = ", ".join(f"«{c}»" for c in tried) or "—"
             return None, [f"✗ {sc['name']}: не нашёл игру в магазине Steam. Пробовал: {names}.",
-                          "   Переименуй ярлык в точное название игры — после этого оформлю сам."]
+                          "   Переименуй ярлык в точное название игры — после этого оформлю сам."] + emulator
         orig = match["appid"]
         item = steamweb.store_item(orig)
         game_name = clean_store_name(item.get("name") or match["name"])
@@ -473,6 +475,7 @@ class Runner:
         lines.append(head)
         lines.append(f"   оригинал: {game_name}, store.steampowered.com/app/{orig}")
         lines += self.apply_launch(sc, orig)
+        lines += emulator
         if self.dry_run:
             lines.append("   (пробный прогон — ничего не менял)")
             return orig, lines
@@ -508,6 +511,13 @@ class Runner:
             time.sleep(0.5)
         return [head + f"перевёл на игру: {move['rel']}; Steam пока не записал, проверь свойства ярлыка "
                 f"(было {was})"]
+
+    def apply_emulator(self, sc):
+        try:
+            items = steamemu.plan(sc["exe"]) if self.dry_run else steamemu.fix(sc["exe"])
+        except OSError as e:
+            return [f"   эмулятор Steam: не смог заменить steamclient в конфиге загрузчика ({e})"]
+        return ["   " + steamemu.describe(items, self.dry_run)] if items else []
 
     def shortcut_exe(self, appid):
         path = os.path.join(STEAM, "userdata", self.user, "config", "shortcuts.vdf")

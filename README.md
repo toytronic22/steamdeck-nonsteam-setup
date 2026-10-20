@@ -17,6 +17,9 @@ seconds its shortcut gets everything the Steam original would have:
    crashes with "General protection fault" (Batman: Arkham Asylum without PhysX).
 7. **Launch target** — a shortcut that points to the graphics configurator instead of the game is switched to the
    game's exe.
+8. **Steam emulator** — a repack whose loader starts the Goldberg/gbe emulator as `steamclient64.dll` gets a copy
+   of it under another name: Proton swaps a module with that name for the real Steam, and a game missing from your
+   account quits a second after start (Cast n Chill).
 
 The «Оформить новые игры» ("Set up new games") button in Steam does the same on demand and shows a report: what
 was found, what was set and why. When there are no new games, it shows the last report, including the automatic
@@ -255,6 +258,17 @@ shortcut to the game's exe — with up to three suitable exes nearby. For Batman
 `Binaries/ShippingPC-BmGame.exe` instead of `Binaries/BmLauncher.exe`; graphics settings are then changed in the
 game itself.
 
+**Repack with a Steam emulator.** Some repacks start the game through a loader that loads the Goldberg/gbe Steam
+emulator as `steamclient64.dll`. Proton intercepts a module with that name and hands it over to the real Steam
+(`lsteamclient`), which does not see the game on your account: the game quits within a second or two, with no error.
+If the shortcut's exe folder has such a loader's config — `steamclient64.ini` (SmartSteamLoader, keys
+`SteamClientPath64` and `SteamClientPath` in `[Launcher]`) or `ColdClientLoader.ini` (gbe, keys `SteamClient64Dll`
+and `SteamClientDll` in `[SteamClient]`) — and the dll it names is on disk, the program puts a copy next to it as
+`gbe_client64.dll` (`gbe_client.dll` for 32-bit), writes the new name into the config and keeps the original config
+as `.ini.orig`. The report says «эмулятор Steam: …». This does not depend on the store: it is done even for a game
+the store search did not find. A second run changes nothing; to undo, put the `.orig` back. A game set up before
+this step appeared gets it with `run.sh --appid <id>`.
+
 A shortcut pointing to something other than a program (a `.dll`, `.ini`, an image — this happens if you pick the
 wrong file in «Add a Non-Steam Game») will not start in Steam. Such a shortcut is not set up; the report says what it
 points to, which exes are nearby, and what to do — remove the shortcut and add the game's exe.
@@ -304,6 +318,7 @@ overwrite it.
 |---|---|
 | `main.py` | picking shortcuts, name, artwork, Proton, layout, report |
 | `launch.py` | Steam launch options: switching a shortcut from a configurator to the game, launcher hint |
+| `steamemu.py` | a repack's Steam emulator under Proton: a renamed copy of `steamclient64.dll` in the loader config |
 | `steamcdp.py` | talking to Steam through the debugging port (Python standard library only) |
 | `steamweb.py` | store search, artwork, logo, controller support |
 | `protondb.py` | the ProtonDB database and choosing Proton |
