@@ -18,6 +18,7 @@ import launch
 import layouts
 import protondb
 import redist
+import steamemu
 import steamweb
 import update
 import vdf
@@ -473,6 +474,7 @@ class Runner:
         lines.append(head)
         lines.append(f"   оригинал: {game_name}, store.steampowered.com/app/{orig}")
         lines += self.apply_launch(sc, orig)
+        lines += self.apply_emulator(sc)
         if self.dry_run:
             lines.append("   (пробный прогон — ничего не менял)")
             return orig, lines
@@ -508,6 +510,13 @@ class Runner:
             time.sleep(0.5)
         return [head + f"перевёл на игру: {move['rel']}; Steam пока не записал, проверь свойства ярлыка "
                 f"(было {was})"]
+
+    def apply_emulator(self, sc):
+        try:
+            items = steamemu.plan(sc["exe"]) if self.dry_run else steamemu.fix(sc["exe"])
+        except OSError as e:
+            return [f"   эмулятор Steam: не смог заменить steamclient в конфиге загрузчика ({e})"]
+        return ["   " + steamemu.describe(items, self.dry_run)] if items else []
 
     def shortcut_exe(self, appid):
         path = os.path.join(STEAM, "userdata", self.user, "config", "shortcuts.vdf")
