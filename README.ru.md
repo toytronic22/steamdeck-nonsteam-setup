@@ -1,6 +1,10 @@
 # Оформить новые игры
 
+[![tests](https://github.com/toytronic22/steamdeck-nonsteam-setup/actions/workflows/tests.yml/badge.svg)](https://github.com/toytronic22/steamdeck-nonsteam-setup/actions/workflows/tests.yml)
+
 [English](README.md) · **Русский**
+
+![Обложка кнопки «Оформить новые игры» в Steam](assets/wide.jpg)
 
 Для Steam Deck. Добавил в Steam игру не из Steam (репак, GOG, что угодно с `.exe`) — через несколько секунд
 ярлык сам получает всё, что было бы у оригинала:
