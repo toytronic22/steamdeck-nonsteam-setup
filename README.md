@@ -1,6 +1,10 @@
 # Set up new games
 
+[![tests](https://github.com/toytronic22/steamdeck-nonsteam-setup/actions/workflows/tests.yml/badge.svg)](https://github.com/toytronic22/steamdeck-nonsteam-setup/actions/workflows/tests.yml)
+
 **English** · [Русский](README.ru.md)
+
+![The «Оформить новые игры» button artwork in Steam](assets/wide.jpg)
 
 For the Steam Deck. Add a non-Steam game to Steam (a repack, a GOG game, anything with an `.exe`), and within a few
 seconds its shortcut gets everything the Steam original would have:
